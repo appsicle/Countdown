@@ -44,6 +44,7 @@ function App() {
         .format(FORMAT);
       setClockTime(finalDate);
       var newurl = URL_BASE + "?date=" + finalDate;
+      console.log(newurl)
       window.history.pushState({ path: newurl }, "", newurl);
     }
   }, [selectedTime, date]);
