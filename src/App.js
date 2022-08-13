@@ -32,17 +32,20 @@ function App() {
       console.log(finalDate);
       setClockTime(finalDate);
     } else {
+      console.log('1');
       const [hours, minutes] = selectedTime.split(":");
       const computedTime = {
         hours: parseInt(hours),
         minutes,
       };
-
+      console.log('2');
       const finalDate = moment(date)
         .hours(computedTime.hours)
         .minutes(computedTime.minutes)
         .format(FORMAT);
+      console.log('3');
       setClockTime(finalDate);
+      console.log('4');
       var newurl = URL_BASE + "?date=" + finalDate;
       console.log(newurl)
       window.history.pushState({ path: newurl }, "", newurl);
