@@ -9,6 +9,11 @@ import moment from "moment";
 import FlipClock from "x-react-flipclock";
 
 const FORMAT = "YYYY-MM-DD hh:mm:ss";
+const URL_BASE =
+  window.location.protocol +
+  "//" +
+  window.location.host +
+  window.location.pathname;
 
 const params = new Proxy(new URLSearchParams(window.location.search), {
   get: (searchParams, prop) => searchParams.get(prop),
@@ -38,7 +43,8 @@ function App() {
         .minutes(computedTime.minutes)
         .format(FORMAT);
       setClockTime(finalDate);
-      window.history.replaceState(null, null, "?date=" + finalDate);
+      var newurl = URL_BASE + "?date=" + finalDate;
+      window.history.pushState({ path: newurl }, "", newurl);
     }
   }, [selectedTime, date]);
 
