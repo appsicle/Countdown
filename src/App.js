@@ -25,30 +25,26 @@ function App() {
   const [selectedTime, setSelectedTime] = useState("12:00");
   const [date, setDate] = useState(new Date());
 
+  const setQueryParams = () => {
+    const [hours, minutes] = selectedTime.split(":");
+    const computedTime = {
+      hours: parseInt(hours),
+      minutes,
+    };
+    const finalDate = moment(date)
+      .hours(computedTime.hours)
+      .minutes(computedTime.minutes)
+      .format(FORMAT);
+    setClockTime(finalDate);
+    var newurl = URL_BASE + "?date=" + finalDate;
+    window.history.pushState({ path: newurl }, "", newurl);
+  }
+
   useEffect(() => {
     let value = params.date;
     if (value) {
       const finalDate = moment(value).format(FORMAT);
-      console.log(finalDate);
       setClockTime(finalDate);
-    } else {
-      console.log('1');
-      const [hours, minutes] = selectedTime.split(":");
-      const computedTime = {
-        hours: parseInt(hours),
-        minutes,
-      };
-      console.log('2');
-      const finalDate = moment(date)
-        .hours(computedTime.hours)
-        .minutes(computedTime.minutes)
-        .format(FORMAT);
-      console.log('3');
-      setClockTime(finalDate);
-      console.log('4');
-      var newurl = URL_BASE + "?date=" + finalDate;
-      console.log(newurl)
-      window.history.pushState({ path: newurl }, "", newurl);
     }
   }, [selectedTime, date]);
 
@@ -63,7 +59,7 @@ function App() {
           click
         </Button>
         <Modal
-          open={modalOpen}
+          open={modalOpen || !clockTime}
           toggle={() => {
             setModalOpen(!modalOpen);
           }}
@@ -85,11 +81,12 @@ function App() {
                   }}
                   onChange={(event, time) => setSelectedTime(time)}
                 />
+                <Button onClick={setQueryParams}></Button>
               </div>
             </div>
           </ModalBody>
         </Modal>
-        <FlipClock
+        {clockTime ? <FlipClock
           type="countdown"
           count_to={clockTime} // Date/Time
           units={[
@@ -114,7 +111,7 @@ function App() {
               title: "seconds",
             },
           ]}
-        />
+        /> : null}
       </body>
     </div>
   );
