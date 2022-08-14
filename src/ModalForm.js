@@ -1,29 +1,29 @@
 import TimezoneSelect from "react-timezone-select";
 import TimeField from "react-simple-timefield";
-import { FormInput, DatePicker } from 'shards-react';
+import { FormInput, DatePicker } from "shards-react";
 import { useEffect, useState } from "react";
-import moment from 'moment';
-
-const FORMAT = 'YYYY-MM-DD hh:mm:ss';
+import moment from "moment";
 
 const ModalForm = ({ setClockTime }) => {
   const [selectedTimezone, setSelectedTimezone] = useState({});
-  const [selectedTime, setSelectedTime] = useState('12:00');
+  const [selectedTime, setSelectedTime] = useState("12:00");
   const [date, setDate] = useState(new Date());
 
-
   useEffect(() => {
-    const [hours, minutes] = selectedTime.split(':');
+    const [hours, minutes] = selectedTime.split(":");
     const hoursOffset = parseInt(hours) + (selectedTimezone.offset || 0);
     const computedTime = {
       hours: hoursOffset,
-      minutes
+      minutes,
     };
 
-    const finalDate = moment(date).hours(computedTime.hours).minutes(computedTime.minutes).format(FORMAT);
+    const finalDate = moment(date)
+      .hours(computedTime.hours)
+      .minutes(computedTime.minutes)
+      .format(FORMAT);
     console.log(finalDate);
     setClockTime(finalDate);
-  }, [selectedTimezone, selectedTime, date])
+  }, [selectedTimezone, selectedTime, date]);
 
   return (
     <div>

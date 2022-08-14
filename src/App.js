@@ -1,76 +1,52 @@
-import Clock from "./Clock";
-// import ModalForm from "./ModalForm";
-import "./App.css";
 import { Button, Modal, ModalBody, ModalHeader } from "shards-react";
 import { useState, useEffect } from "react";
-import TimeField from "react-simple-timefield";
 import { FormInput, DatePicker } from "shards-react";
-import moment from "moment";
-import FlipClock from "x-react-flipclock";
-
-const FORMAT = "YYYY-MM-DD hh:mm:ss";
-const URL_BASE =
-  window.location.protocol +
-  "//" +
-  window.location.host +
-  window.location.pathname;
-
-const params = new Proxy(new URLSearchParams(window.location.search), {
-  get: (searchParams, prop) => searchParams.get(prop),
-});
+import {
+  params,
+  setQueryParams,
+  computeCountdownDate,
+  formatDate,
+} from "./countdownHelper";
+import TimeField from "react-simple-timefield";
+import Clock from "./Clock";
+import "./App.css";
 
 function App() {
   const [modalOpen, setModalOpen] = useState(false);
-  const [clockTime, setClockTime] = useState(null);
+  const [countdownDate, setCountdownDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState("12:00");
-  const [date, setDate] = useState(new Date());
-
-  const setQueryParams = () => {
-    const [hours, minutes] = selectedTime.split(":");
-    const computedTime = {
-      hours: parseInt(hours),
-      minutes,
-    };
-    const finalDate = moment(date)
-      .hours(computedTime.hours)
-      .minutes(computedTime.minutes)
-      .format(FORMAT);
-    setClockTime(finalDate);
-    var newurl = URL_BASE + "?date=" + finalDate;
-    window.history.pushState({ path: newurl }, "", newurl);
-  }
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   useEffect(() => {
-    let value = params.date;
+    const value = params.date;
     if (value) {
-      const finalDate = moment(value).format(FORMAT);
-      setClockTime(finalDate);
+      const finalDate = formatDate(value);
+      setCountdownDate(finalDate);
     }
-  }, [selectedTime, date]);
+  }, [selectedTime, selectedDate]);
+
+  const toggleModal = () => setModalOpen(!modalOpen);
+
+  const submitCountdownDate = () => {
+    const computedCountdownDate = computeCountdownDate(selectedDate, selectedTime);
+    console.log(computeCountdownDate);
+    setCountdownDate(computedCountdownDate);
+    setQueryParams(computedCountdownDate);
+    setModalOpen(false);
+  };
 
   return (
-    <div className="App">
+    <div>
       <body>
-        <Button
-          onClick={() => {
-            setModalOpen(true);
-          }}
-        >
-          click
-        </Button>
-        <Modal
-          open={modalOpen || !clockTime}
-          toggle={() => {
-            setModalOpen(!modalOpen);
-          }}
-        >
+        <Button onClick={toggleModal}>click</Button>
+        <Modal open={modalOpen || !countdownDate} toggle={toggleModal}>
           <ModalHeader>End Date & Time</ModalHeader>
           <ModalBody>
             <div>
               <div className="select-wrapper">
                 <DatePicker
-                  selected={date}
-                  onChange={(d) => setDate(d)}
+                  selected={selectedDate}
+                  onChange={(d) => setSelectedDate(d)}
                   typeable
                 />
                 <TimeField
@@ -79,39 +55,14 @@ function App() {
                   style={{
                     width: "unset",
                   }}
-                  onChange={(event, time) => setSelectedTime(time)}
+                  onChange={(_, time) => setSelectedTime(time)}
                 />
-                <Button onClick={setQueryParams}></Button>
+                <Button onClick={submitCountdownDate}>Submit</Button>
               </div>
             </div>
           </ModalBody>
         </Modal>
-        {clockTime ? <FlipClock
-          type="countdown"
-          count_to={clockTime} // Date/Time
-          units={[
-            {
-              sep: "",
-              type: "days",
-              title: "day",
-            },
-            {
-              sep: "",
-              type: "hours",
-              title: "hour",
-            },
-            {
-              sep: "",
-              type: "minutes",
-              title: "minutes",
-            },
-            {
-              sep: "",
-              type: "seconds",
-              title: "seconds",
-            },
-          ]}
-        /> : null}
+        <Clock countdownDate={countdownDate} />
       </body>
     </div>
   );
