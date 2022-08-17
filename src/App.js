@@ -1,12 +1,12 @@
-import { Button, Modal, ModalBody, ModalHeader } from "shards-react";
+import { Button, Modal, ModalBody, ModalHeader, FormInput, DatePicker } from "shards-react";
 import { useState, useEffect } from "react";
-import { FormInput, DatePicker } from "shards-react";
 import {
   params,
   setQueryParams,
   computeCountdownDate,
-  formatDate,
+  FORMAT,
 } from "./countdownHelper";
+import moment from "moment";
 import TimeField from "react-simple-timefield";
 import Clock from "./Clock";
 import "./App.css";
@@ -16,11 +16,12 @@ function App() {
   const [countdownDate, setCountdownDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState("12:00");
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [eventName, setEventName] = useState("");
 
   useEffect(() => {
     const value = params.date;
     if (value) {
-      const finalDate = formatDate(value);
+      const finalDate = moment(value, FORMAT).toDate();
       setCountdownDate(finalDate);
     }
   }, [selectedTime, selectedDate]);
@@ -28,10 +29,12 @@ function App() {
   const toggleModal = () => setModalOpen(!modalOpen);
 
   const submitCountdownDate = () => {
-    const computedCountdownDate = computeCountdownDate(selectedDate, selectedTime);
-    console.log(computeCountdownDate);
+    const computedCountdownDate = computeCountdownDate(
+      selectedDate,
+      selectedTime
+    );
     setCountdownDate(computedCountdownDate);
-    setQueryParams(computedCountdownDate);
+    setQueryParams(computedCountdownDate.format(FORMAT));
     setModalOpen(false);
   };
 
@@ -57,12 +60,19 @@ function App() {
                   }}
                   onChange={(_, time) => setSelectedTime(time)}
                 />
+                <FormInput
+                  value={eventName}
+                  placeholder='Event Name'
+                  onChange={(e) => {
+                    setEventName(e.target.value);
+                  }}
+                />
                 <Button onClick={submitCountdownDate}>Submit</Button>
               </div>
             </div>
           </ModalBody>
         </Modal>
-        <Clock countdownDate={countdownDate} />
+        <Clock countdownDate={countdownDate} eventName={eventName} />
       </body>
     </div>
   );

@@ -10,5 +10,7 @@
   --fcc-divider-color: black; /* color of divider */
   --fcc-divider-height: 1px; /* height of divider */
 
-  margin: auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
