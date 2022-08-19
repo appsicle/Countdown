@@ -1,4 +1,13 @@
-import { Button, Modal, ModalBody, ModalHeader, FormInput, DatePicker } from "shards-react";
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  FormInput,
+  DatePicker,
+  FormGroup,
+  Form,
+} from "shards-react";
 import { useState, useEffect } from "react";
 import {
   params,
@@ -6,6 +15,7 @@ import {
   computeCountdownDate,
   FORMAT,
 } from "./countdownHelper";
+import { BsFillGearFill } from "react-icons/bs";
 import moment from "moment";
 import TimeField from "react-simple-timefield";
 import Clock from "./Clock";
@@ -24,7 +34,7 @@ function App() {
       const finalDate = moment(value.date, FORMAT).toDate();
       setSelectedDate(finalDate);
       setCountdownDate(finalDate);
-      setEventName(value.eventName)
+      setEventName(value.eventName);
     }
   }, []);
 
@@ -43,17 +53,24 @@ function App() {
   return (
     <div>
       <body>
-        <Button onClick={toggleModal}>click</Button>
+        {/* <Button onClick={toggleModal}><BsGear/></Button> */}
+        <BsFillGearFill className="gear-icon" onClick={toggleModal}/>
         <Modal open={modalOpen || !countdownDate} toggle={toggleModal}>
-          <ModalHeader>End Date & Time</ModalHeader>
+          <ModalHeader>Countdown Settings</ModalHeader>
           <ModalBody>
-            <div>
-              <div className="select-wrapper">
+            <Form>
+              <FormGroup>
+                <label htmlFor="date">Countdown Date</label>
                 <DatePicker
+                  className="date-picker"
                   selected={selectedDate}
                   onChange={(d) => setSelectedDate(d)}
                   typeable
                 />
+              </FormGroup>
+
+              <FormGroup>
+                <label htmlFor="date">Countdown Time (Military)</label>
                 <TimeField
                   value={selectedTime}
                   input={<FormInput />}
@@ -62,16 +79,21 @@ function App() {
                   }}
                   onChange={(_, time) => setSelectedTime(time)}
                 />
+              </FormGroup>
+
+              <FormGroup>
+                <label htmlFor="date">Event Name</label>
                 <FormInput
                   value={eventName}
-                  placeholder='Event Name'
+                  placeholder="Event Name"
                   onChange={(e) => {
                     setEventName(e.target.value);
                   }}
                 />
-                <Button onClick={submitCountdownDate}>Submit</Button>
-              </div>
-            </div>
+              </FormGroup>
+
+              <Button onClick={submitCountdownDate}>Submit</Button>
+            </Form>
           </ModalBody>
         </Modal>
         <Clock countdownDate={countdownDate} eventName={eventName} />

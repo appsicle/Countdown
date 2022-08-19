@@ -7,15 +7,15 @@ const Clock = ({ countdownDate, eventName }) => {
     <div>
       <div className="display-container">
         {countdownDate ? (
+          <>
           <FlipClockCountdown
             className="flip-clock"
             duration={0.5}
             to={countdownDate}
           />
-        ) : (
-          "invalid"
-        )}
-        <p className="display-container-text"> Until {eventName}</p>
+          <p className="display-container-text"> Until {eventName}</p>
+          </>
+        ) : null}
       </div>
     </div>
   );
