@@ -17,13 +17,13 @@ export const params = new Proxy(new URLSearchParams(window.location.search), {
   get: (searchParams, prop) => searchParams.get(prop),
 });
 
-export const setQueryParams = (date) => {
+export const setQueryParams = (date, eventName) => {
   const URL_BASE =
     window.location.protocol +
     "//" +
     window.location.host +
     window.location.pathname;
 
-  var newurl = URL_BASE + "?date=" + date;
+  var newurl = URL_BASE + "?date=" + date + '&eventName=' + eventName;
   window.history.pushState({ path: newurl }, "", newurl);
 };

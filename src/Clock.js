@@ -5,7 +5,7 @@ import "./Clock.css";
 const Clock = ({ countdownDate, eventName }) => {
   return (
     <div>
-      <>
+      <div className="display-container">
         {countdownDate ? (
           <FlipClockCountdown
             className="flip-clock"
@@ -15,8 +15,8 @@ const Clock = ({ countdownDate, eventName }) => {
         ) : (
           "invalid"
         )}
-        Until {eventName}
-      </>
+        <p className="display-container-text"> Until {eventName}</p>
+      </div>
     </div>
   );
 };

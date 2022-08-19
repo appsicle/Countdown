@@ -19,12 +19,14 @@ function App() {
   const [eventName, setEventName] = useState("");
 
   useEffect(() => {
-    const value = params.date;
-    if (value) {
-      const finalDate = moment(value, FORMAT).toDate();
+    const value = params;
+    if (value.date && value.eventName) {
+      const finalDate = moment(value.date, FORMAT).toDate();
+      setSelectedDate(finalDate);
       setCountdownDate(finalDate);
+      setEventName(value.eventName)
     }
-  }, [selectedTime, selectedDate]);
+  }, []);
 
   const toggleModal = () => setModalOpen(!modalOpen);
 
@@ -34,7 +36,7 @@ function App() {
       selectedTime
     );
     setCountdownDate(computedCountdownDate);
-    setQueryParams(computedCountdownDate.format(FORMAT));
+    setQueryParams(computedCountdownDate.format(FORMAT), eventName);
     setModalOpen(false);
   };
 
